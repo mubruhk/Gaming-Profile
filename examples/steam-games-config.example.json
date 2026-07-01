@@ -1,0 +1,13 @@
+{
+  "userName": "You",
+  "steamId": "YOUR_STEAM_ID_64",
+  "steamVanityUrl": "",
+  "enabled": true,
+  "schedule": "weekly",
+  "maxRecommendations": 5,
+  "region": "us",
+  "deliveryCommand": "",
+  "scoringWeights": {},
+  "lastProfileUpdate": null,
+  "lastRecommendation": null
+}

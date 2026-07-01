@@ -1,0 +1,15 @@
+{
+  "games": [
+    {
+      "name": "Rocket League",
+      "playtime_hours": 1000,
+      "platform": "epic",
+      "recency": "occasional",
+      "appid": null,
+      "genres": ["Sports", "Racing", "Indie"],
+      "tags": ["Competitive", "Multiplayer"],
+      "notes": "Example entry — delete or replace. Delisted from Steam, so genres/tags are set by hand.",
+      "mechanics_loved": ["highly mechanical gameplay"]
+    }
+  ]
+}

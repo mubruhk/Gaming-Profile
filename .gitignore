@@ -1,0 +1,22 @@
+# Per-user data & secrets — never commit
+.gaming-profile/
+data/
+*.secret
+.secrets/
+steam.env
+
+# The user's real config/data if run in-place
+steam-games-config.json
+steam-profile.json
+steam-taste-profile.json
+game-recs-state.json
+steam-games-history.json
+gaming-profile-v0.json
+manual-games.json
+interview_state.json
+weekly-discovery-latest.md
+cron.log
+
+# Python
+__pycache__/
+*.pyc
