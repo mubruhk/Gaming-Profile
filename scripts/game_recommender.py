@@ -16,7 +16,7 @@ import time
 from datetime import datetime, timezone
 
 from steam_common import (fetch_json, fetch_steamspy_tags,
-                          MEMORY_DIR, TASTE_PATH, PROFILE_PATH, STATE_PATH, CONFIG_PATH,
+                          TASTE_PATH, PROFILE_PATH, STATE_PATH, CONFIG_PATH,
                           GAMING_PROFILE_PATH, MANUAL_PATH)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")

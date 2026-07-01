@@ -22,6 +22,7 @@ won't resolve — pass --genres/--tags, or leave empty and interview the game la
 import json
 import os
 import sys
+import urllib.parse
 
 from steam_common import (fetch_json, fetch_app_details, fetch_steamspy_tags,
                           atomic_write_json, normalize_game_key, MANUAL_PATH)
@@ -45,7 +46,7 @@ def _save(data):
 
 def resolve_on_steam(name):
     """Return (appid, genres, tags) if the game is found on the Steam store, else (None, [], [])."""
-    term = name.replace(" ", "+")
+    term = urllib.parse.quote_plus(name)
     data = fetch_json(f"https://store.steampowered.com/api/storesearch/?term={term}&cc=us&l=en")
     items = (data or {}).get("items", [])
     if not items:
@@ -132,11 +133,15 @@ def main(argv):
     if len(argv) < 2 or argv[1] not in OPS:
         print(json.dumps({"ok": False, "error": f"Usage: manual_games.py {{{'|'.join(OPS)}}} [flags]"}))
         return 1
-    args = {}
-    for flag, key in FLAGS.items():
-        if flag in argv:
-            args[key] = argv[argv.index(flag) + 1]
-    print(json.dumps(OPS[argv[1]](args), ensure_ascii=False))
+    try:
+        args = {}
+        for flag, key in FLAGS.items():
+            if flag in argv:
+                args[key] = argv[argv.index(flag) + 1]
+        result = OPS[argv[1]](args)
+    except (ValueError, IndexError) as e:
+        result = {"ok": False, "error": f"Bad arguments: {e}"}
+    print(json.dumps(result, ensure_ascii=False))
     return 0
 
 

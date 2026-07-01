@@ -2,17 +2,17 @@
 """
 interview_engine.py — Agent-callable gaming-interview engine.
 
-Runs inside the OpenClaw agent "Courtney" over Discord: one Discord message per turn.
+Designed to be driven by a chat agent, one message per turn (works from a plain shell too).
 This is NOT a blocking input loop. Each invocation is one stateless request/response:
 
     python3 scripts/interview_engine.py <op> [--json '<payload>']
 
-and prints exactly ONE JSON object to stdout. Courtney calls an op, posts the returned
-`response` text to Discord, and on the user's reply calls `answer` again.
+and prints exactly ONE JSON object to stdout. The agent calls an op, shows the returned
+`response` text to the user, and on the user's reply calls `answer` again.
 
-State files:
-    memory/interview_state.json    active session (deleted on completion/cancel; gitignored)
-    memory/gaming-profile-v0.json  answers folded into game_deep_dives + global preferences
+State files (in the data dir, $GAMING_PROFILE_HOME):
+    interview_state.json    active session (deleted on completion/cancel; gitignored)
+    gaming-profile-v0.json  answers folded into game_deep_dives + global preferences
 
 Ops:
     status     {}                                         -> active session + progress
@@ -142,7 +142,7 @@ def _ensure_dive(profile, game_name, appid, playtime_hours, mode):
             "mode": mode,
             "answers": dict(EMPTY_ANSWERS),
             "interview_complete": False,
-            "interview_source": "courtney_discord",
+            "interview_source": "agent",
             "interview_started": _now(),
             "interview_updated": _now(),
             "questions_answered": 0,

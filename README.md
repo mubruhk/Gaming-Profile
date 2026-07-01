@@ -9,7 +9,7 @@ signal comes from short **interviews** about your games (what mechanics you love
 mood, story-vs-gameplay). Non-Steam games are blended in, and one old 1000-hour obsession can't
 drown out your current taste.
 
-Runs anywhere with **Python 3.6+ and no dependencies** (standard library only). Designed to work
+Runs anywhere with **Python 3.7+ and no dependencies** (standard library only). Designed to work
 standalone from the CLI *or* as an [OpenClaw](https://openclaw.ai) skill an assistant can drive.
 
 ## Quick start

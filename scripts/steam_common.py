@@ -90,6 +90,12 @@ def mask_key(key):
     return f"{key[:4]}...{key[-4:]}"
 
 
+def _safe_url(url):
+    """URL rendered safe for logging: masks any key= query param so the Steam API key
+    can never leak into logs, cron output, or agent-visible errors."""
+    return re.sub(r"(key=)[^&]*", r"\1***", url or "")[:120]
+
+
 def fetch_json(url, retries=3, backoff=1.0, timeout=20):
     """GET JSON with exponential backoff. Honors Retry-After on HTTP 429.
     Returns the parsed object, or None on persistent failure."""
@@ -105,15 +111,15 @@ def fetch_json(url, retries=3, backoff=1.0, timeout=20):
                             wait, attempt + 1, retries)
                 time.sleep(wait)
                 continue
-            log.warning("HTTP %d fetching %s: %s", e.code, url[:80], e)
+            log.warning("HTTP %d fetching %s: %s", e.code, _safe_url(url), e)
             return None
         except Exception as e:
             if attempt < retries - 1:
                 wait = backoff * (2 ** attempt)
-                log.warning("Error fetching %s: %s — retry in %.1fs", url[:80], e, wait)
+                log.warning("Error fetching %s: %s — retry in %.1fs", _safe_url(url), e, wait)
                 time.sleep(wait)
                 continue
-            log.warning("Error fetching %s: %s", url[:80], e)
+            log.warning("Error fetching %s: %s", _safe_url(url), e)
             return None
     return None
 

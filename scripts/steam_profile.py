@@ -10,10 +10,9 @@ import logging
 import os
 import sys
 import time
-import urllib.request
-import urllib.error
 
-from steam_common import resolve_api_key, mask_key, MEMORY_DIR, CONFIG_PATH, PROFILE_PATH, HISTORY_PATH
+from steam_common import (resolve_api_key, mask_key, fetch_json,
+                          MEMORY_DIR, CONFIG_PATH, PROFILE_PATH, HISTORY_PATH)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 log = logging.getLogger("steam_profile")
@@ -21,31 +20,10 @@ log = logging.getLogger("steam_profile")
 def load_config():
     os.makedirs(MEMORY_DIR, exist_ok=True)
     if not os.path.exists(CONFIG_PATH):
-        log.error("Config not found at %s. Run setup_steam_discovery.sh first.", CONFIG_PATH)
+        log.error("Config not found at %s. Run setup.sh first.", CONFIG_PATH)
         sys.exit(1)
     with open(CONFIG_PATH) as f:
         return json.load(f)
-
-def fetch_json(url):
-    """Fetch JSON from URL with retry logic."""
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                return json.loads(resp.read().decode())
-        except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < max_retries - 1:
-                retry_after = int(e.headers.get("Retry-After", 5))
-                log.warning("Rate limited. Waiting %ds...", retry_after)
-                time.sleep(retry_after)
-                continue
-            log.error("HTTP %d fetching %s: %s", e.code, url, e)
-            return None
-        except Exception as e:
-            log.error("Error fetching %s: %s", url, e)
-            return None
-    return None
 
 def fetch_owned_games(api_key, steam_id):
     """Fetch owned games list from Steam API."""
@@ -54,7 +32,7 @@ def fetch_owned_games(api_key, steam_id):
         f"?key={api_key}&steamid={steam_id}"
         f"&include_appinfo=true&include_played_free_games=true"
     )
-    data = fetch_json(url)
+    data = fetch_json(url, timeout=30)
     if data and "response" in data and "games" in data["response"]:
         return data["response"]
     return None
@@ -65,7 +43,7 @@ def fetch_recently_played(api_key, steam_id):
         f"https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/"
         f"?key={api_key}&steamid={steam_id}&count=50"
     )
-    data = fetch_json(url)
+    data = fetch_json(url, timeout=30)
     if data and "response" in data:
         return data["response"]
     return None
@@ -136,6 +114,7 @@ def save_profile(games_response, recent_response):
         "game_count": profile["game_count"],
         "total_playtime_hours": profile["total_playtime_hours"],
     })
+    history["updates"] = history["updates"][-52:]  # cap: ~1 year of weekly runs
     with open(HISTORY_PATH, "w") as f:
         json.dump(history, f, indent=2)
 

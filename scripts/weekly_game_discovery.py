@@ -13,7 +13,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-from steam_common import MEMORY_DIR, PROFILE_PATH, TASTE_PATH, STATE_PATH, CONFIG_PATH, LATEST_PATH
+from steam_common import PROFILE_PATH, TASTE_PATH, STATE_PATH, CONFIG_PATH, LATEST_PATH
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 log = logging.getLogger("weekly_discovery")

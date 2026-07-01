@@ -12,6 +12,6 @@ each with a reason.
   a chat agent to drive.
 - **Recommend:** weekly picks with genre/tag + interview-signal scoring and human-readable
   reasons; pluggable delivery.
-- **Portable:** stdlib-only (no pip), data dir via `GAMING_PROFILE_HOME`, bring-your-own Steam key.
+- **Portable:** stdlib-only (no pip, Python 3.7+), data dir via `GAMING_PROFILE_HOME`, bring-your-own Steam key.
 
 Setup: `STEAM_API_KEY=<key> bash scripts/setup.sh` → see `SKILL.md`.

@@ -16,6 +16,7 @@ manual-games.json
 interview_state.json
 weekly-discovery-latest.md
 cron.log
+.tmp-*
 
 # Python
 __pycache__/

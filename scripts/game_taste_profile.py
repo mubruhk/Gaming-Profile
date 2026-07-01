@@ -12,7 +12,7 @@ import sys
 import time
 
 from steam_common import (fetch_app_details, fetch_steamspy_tags, atomic_write_json,
-                          MEMORY_DIR, PROFILE_PATH, TASTE_PATH, CONFIG_PATH, MANUAL_PATH)
+                          PROFILE_PATH, TASTE_PATH, CONFIG_PATH, MANUAL_PATH)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 log = logging.getLogger("taste_profile")
