@@ -14,4 +14,4 @@ each with a reason.
   reasons; pluggable delivery.
 - **Portable:** stdlib-only (no pip, Python 3.7+), data dir via `GAMING_PROFILE_HOME`, bring-your-own Steam key.
 
-Setup: `STEAM_API_KEY=<key> bash scripts/setup.sh` → see `SKILL.md`.
+Setup: `bash scripts/setup.sh` (walks you through API key + Steam ID) → see `SKILL.md`.

@@ -14,22 +14,25 @@ standalone from the CLI *or* as an [OpenClaw](https://openclaw.ai) skill an assi
 
 ## Quick start
 
-1. **Get a Steam Web API key** — https://steamcommunity.com/dev/apikey (free; you must accept
-   Steam's API Terms of Use).
-2. **Set up:**
+1. **Run setup — it walks you through everything:**
    ```bash
-   STEAM_API_KEY=<your-key> bash scripts/setup.sh
+   bash scripts/setup.sh
    ```
-   This writes the key to `~/.gaming-profile/.secrets/steam.env` (chmod 600) and creates a config
-   template. Edit `~/.gaming-profile/steam-games-config.json` and set your `steamId` (SteamID64 —
-   find it at https://steamid.io).
-3. **Build your profile:**
+   It asks for:
+   - your **Steam Web API key** — free at https://steamcommunity.com/dev/apikey (log in, accept
+     the API terms, any domain name works). Stored locally in `~/.gaming-profile/.secrets/steam.env`
+     (chmod 600), never shared or logged.
+   - your **Steam account ID** — paste your SteamID64, your profile URL, or just your vanity name
+     (e.g. `yourname` from `steamcommunity.com/id/yourname`) and it resolves the ID for you.
+
+   Then it runs your first library scan. Non-interactive (cron/CI):
+   `STEAM_API_KEY=<key> STEAM_ID=<steamid64> bash scripts/setup.sh`.
+2. **Build your profile:**
    ```bash
-   python3 scripts/steam_profile.py            # pull your library
    python3 scripts/game_taste_profile.py --force
    python3 scripts/build_gaming_profile.py
    ```
-4. **Get recommendations:**
+3. **Get recommendations:**
    ```bash
    python3 scripts/game_recommender.py
    # or the full formatted weekly run:

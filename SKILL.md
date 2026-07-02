@@ -16,12 +16,15 @@ SteamSpy; deeper signal comes from short structured **interviews** about the use
 
 ## First-time setup
 ```bash
-STEAM_API_KEY=<key> bash $S/setup.sh      # writes secret + config template
-# then edit $GAMING_PROFILE_HOME/steam-games-config.json → set steamId (SteamID64)
-python3 $S/steam_profile.py               # pull the library
+bash $S/setup.sh                          # interactive: asks for the user's Steam API key
+                                          # (steamcommunity.com/dev/apikey) and Steam ID
+                                          # (SteamID64 / profile URL / vanity name — auto-resolved),
+                                          # then runs the first library scan
 python3 $S/game_taste_profile.py --force  # build genre/tag weights
 python3 $S/build_gaming_profile.py        # fuse into gaming-profile-v0.json
 ```
+Non-interactive: `STEAM_API_KEY=<key> STEAM_ID=<steamid64> bash $S/setup.sh`. If driving setup
+for a user over chat, relay setup's questions to them — never invent or reuse someone else's key.
 
 ## Game interview (interactive — one question per turn)
 
