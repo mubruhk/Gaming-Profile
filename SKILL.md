@@ -23,8 +23,19 @@ bash $S/setup.sh                          # interactive: asks for the user's Ste
 python3 $S/game_taste_profile.py --force  # build genre/tag weights
 python3 $S/build_gaming_profile.py        # fuse into gaming-profile-v0.json
 ```
-Non-interactive: `STEAM_API_KEY=<key> STEAM_ID=<steamid64> bash $S/setup.sh`. If driving setup
-for a user over chat, relay setup's questions to them — never invent or reuse someone else's key.
+**Running setup as an agent (no TTY):** ask the user in chat for their API key and their Steam ID
+(any form: SteamID64, profile URL, or vanity name) — never invent or reuse someone else's key.
+Then either:
+```bash
+# if you have the numeric SteamID64:
+STEAM_API_KEY=<key> STEAM_ID=<steamid64> bash $S/setup.sh
+# if the user gave a vanity name or profile URL, pipe the answers in —
+# setup resolves the vanity to a SteamID64 automatically:
+printf '%s\n%s\n' '<key>' '<vanity-or-url-or-id>' | bash $S/setup.sh
+```
+**If the first scan fails with 401/403:** the key is wrong, the Steam ID is wrong, or the user's
+profile privacy hides their library — ask them to set Steam profile → Edit Profile →
+Privacy Settings → **Game details: Public**, then rerun `python3 $S/steam_profile.py`.
 
 ## Game interview (interactive — one question per turn)
 
