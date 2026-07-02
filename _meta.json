@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Build a personal gaming taste profile from your Steam library (plus non-Steam games), run structured interviews about your games, and get weekly recommendations scored against your actual taste.",
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/mubruhk/Gaming-Profile",
   "requires": {
     "python": ">=3.7",
     "pip": []
