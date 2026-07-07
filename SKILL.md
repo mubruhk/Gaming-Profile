@@ -57,7 +57,9 @@ into `preferences` + `game_deep_dives` and the game leaves the queue.
 
 ## Recommendations
 ```bash
-python3 $S/game_recommender.py            # {recommendations:[{name,score,genres,tags,reasons,price,store_url}]}
+python3 $S/game_recommender.py            # {recommendations:[{name,score,genres,tags,reasons,price,store_url,
+                                          #   last_recommended?,last_recommended_days_ago?}]} — the last two appear
+                                          #   when a game resurfaces after the 30-day cooldown; mention it to the user
 python3 $S/weekly_game_discovery.py       # full refresh + a formatted message to stdout
 python3 $S/weekly_game_discovery.py --deliver   # also run config.deliveryCommand (see below)
 ```

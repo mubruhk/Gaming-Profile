@@ -155,6 +155,20 @@ def get_previously_recommended(cooldown_days=DEFAULT_COOLDOWN_DAYS):
                 recd.add(rec.get("appid"))
     return recd
 
+
+def get_last_recommended_map():
+    """{appid: most recent timestamp it was recommended} across retained history.
+    Lets the digest say when a resurfaced game was last suggested."""
+    state = load_json(STATE_PATH, {"weeks": []})
+    last = {}
+    for week in state.get("weeks", []):
+        ts = week.get("timestamp", 0)
+        for rec in week.get("recommendations", []):
+            appid = rec.get("appid")
+            if appid is not None and ts > last.get(appid, 0):
+                last[appid] = ts
+    return last
+
 def score_game(appid, name, taste, weights, prefs_index, region="us"):
     """Score a candidate against the corrected genre/tag profile plus interview signals.
     Returns a result dict (with a `reasons` trace) or None to skip."""
@@ -269,6 +283,7 @@ def build_recommendations():
     cooldown_days = config.get("recommendCooldownDays", DEFAULT_COOLDOWN_DAYS)
     owned = get_owned_appids()
     previous = get_previously_recommended(cooldown_days)
+    last_recommended = get_last_recommended_map()
     log.info("Owned: %d games, On recommendation cooldown (last %dd): %d",
              len(owned), cooldown_days, len(previous))
 
@@ -316,6 +331,11 @@ def build_recommendations():
         log.info("Scoring [%d/%d]: %s (appid %d)", i + 1, len(candidate_list), name, appid)
         result = score_game(appid, name, taste, weights, prefs_index, region=region)
         if result and result["score"] > 0:
+            # A game past its cooldown can be recommended again — note when it last was.
+            last_ts = last_recommended.get(appid)
+            if last_ts:
+                result["last_recommended"] = time.strftime("%Y-%m-%d", time.localtime(last_ts))
+                result["last_recommended_days_ago"] = int((time.time() - last_ts) // 86400)
             scored.append(result)
             scored_count += 1
         time.sleep(0.6)  # Rate limiting

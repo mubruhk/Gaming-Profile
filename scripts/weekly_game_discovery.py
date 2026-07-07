@@ -107,6 +107,8 @@ def format_recommendations(recs_data):
         lines.append(f"→ Why: {top['reasons'][0]}")
     if top.get('price') and top['price'] != "N/A":
         lines.append(f"→ Price: {top['price']}")
+    if top.get('last_recommended'):
+        lines.append(f"→ Last suggested: {top['last_recommended']} ({top.get('last_recommended_days_ago', '?')} days ago) — still a match")
     lines.append(f"→ Steam: <{top['store_url']}>")
     lines.append("")
 
@@ -115,7 +117,8 @@ def format_recommendations(recs_data):
         lines.append("**Also check out:**")
         for i, rec in enumerate(recs[1:], 2):
             genre_str = ", ".join(rec['genres'][:2]) if rec['genres'] else "Various"
-            lines.append(f"{i}. **{rec['name']}** — {genre_str} (match: {rec['score']*100:.0f}%)")
+            again = f" · last suggested {rec['last_recommended']}" if rec.get('last_recommended') else ""
+            lines.append(f"{i}. **{rec['name']}** — {genre_str} (match: {rec['score']*100:.0f}%){again}")
         lines.append("")
 
     # Taste snapshot
