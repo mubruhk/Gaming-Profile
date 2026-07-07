@@ -139,13 +139,20 @@ def get_owned_appids():
     owned |= {g["appid"] for g in manual.get("games", []) if g.get("appid")}
     return owned
 
-def get_previously_recommended():
-    """Get set of previously recommended appids."""
+DEFAULT_COOLDOWN_DAYS = 30
+
+
+def get_previously_recommended(cooldown_days=DEFAULT_COOLDOWN_DAYS):
+    """Appids recommended within the cooldown window (default 30 days).
+    Time-based, not entry-based: frequent runs don't shrink the window, and a good
+    match can resurface once the cooldown passes instead of being buried forever."""
     state = load_json(STATE_PATH, {"weeks": []})
+    cutoff = time.time() - cooldown_days * 86400
     recd = set()
     for week in state.get("weeks", []):
-        for rec in week.get("recommendations", []):
-            recd.add(rec.get("appid"))
+        if week.get("timestamp", 0) >= cutoff:
+            for rec in week.get("recommendations", []):
+                recd.add(rec.get("appid"))
     return recd
 
 def score_game(appid, name, taste, weights, prefs_index, region="us"):
@@ -259,9 +266,11 @@ def build_recommendations():
     else:
         log.info("No interview signals — scoring on corrected genre/tag baseline only.")
 
+    cooldown_days = config.get("recommendCooldownDays", DEFAULT_COOLDOWN_DAYS)
     owned = get_owned_appids()
-    previous = get_previously_recommended()
-    log.info("Owned: %d games, Previously recommended: %d", len(owned), len(previous))
+    previous = get_previously_recommended(cooldown_days)
+    log.info("Owned: %d games, On recommendation cooldown (last %dd): %d",
+             len(owned), cooldown_days, len(previous))
 
     # Gather candidates from multiple public sources
     candidates = set()
@@ -328,7 +337,10 @@ def save_state(recommendations):
     }
 
     state.setdefault("weeks", []).append(week_entry)
-    state["weeks"] = state["weeks"][-10:]
+    # Prune by age, not entry count — keep 90 days so any cooldown window up to that
+    # length has full data, regardless of how often the recommender runs.
+    cutoff = time.time() - 90 * 86400
+    state["weeks"] = [w for w in state["weeks"] if w.get("timestamp", 0) >= cutoff]
 
     with open(STATE_PATH, "w") as f:
         json.dump(state, f, indent=2)

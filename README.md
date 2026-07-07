@@ -180,7 +180,7 @@ Everything lives in `$GAMING_PROFILE_HOME` (default `~/.gaming-profile/`):
 | `steam-taste-profile.json` | weighted genre/tag profile |
 | `gaming-profile-v0.json` | the canonical fused profile (interviews live here) |
 | `manual-games.json` | your non-Steam games |
-| `game-recs-state.json` | recommendation history (prevents repeats, keeps 10 weeks) |
+| `game-recs-state.json` | recommendation history (30-day repeat cooldown, keeps 90 days) |
 
 Config fields (`steam-games-config.json`):
 
@@ -189,6 +189,7 @@ Config fields (`steam-games-config.json`):
 | `userName` | `"You"` | display name in your profile |
 | `steamId` | — | your SteamID64 (setup fills this) |
 | `maxRecommendations` | `5` | picks per run |
+| `recommendCooldownDays` | `30` | how long before a previously recommended game can be recommended again |
 | `region` | `"us"` | store pricing region |
 | `deliveryCommand` | `""` | shell template for `--deliver` (see above) |
 | `scoringWeights` | `{}` | override any scoring weight (`GENRE_WEIGHT` 0.45, `TAG_WEIGHT` 0.25, `MECH_WEIGHT` 0.15, `REVIEW_WEIGHT` 0.10, `MOOD_WEIGHT` 0.05, penalties `MECH_HATE_PEN` 0.15, `ABANDON_PEN` 0.10, …) |
